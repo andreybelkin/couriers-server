@@ -22,8 +22,8 @@ public class Courier {
     @Column(name="app_push_id")
     private String appPushId;
 
-    @OneToMany(fetch = FetchType.LAZY,cascade=CascadeType.ALL,mappedBy = "task")
-    private Set<Task> comments=new HashSet<Task>(0);
+    @OneToMany(fetch = FetchType.LAZY,cascade=CascadeType.ALL,mappedBy = "courier")
+    private Set<Task> tasks=new HashSet<Task>(0);
 
 
     public Courier() {

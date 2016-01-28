@@ -47,9 +47,9 @@ public class Address {
     private String rayon;
 
     @Column(name="house_year")
-    private Long houseYear;
+    private String houseYear;
 
-    @Column(name="key")
+    @Column(name="keya")
     private String key;
 
     @Column(name="comment")
@@ -104,11 +104,11 @@ public class Address {
         this.houseQuality = houseQuality;
     }
 
-    public Long getHouseYear() {
+    public String getHouseYear() {
         return houseYear;
     }
 
-    public void setHouseYear(Long houseYear) {
+    public void setHouseYear(String houseYear) {
         this.houseYear = houseYear;
     }
 

@@ -30,15 +30,19 @@ public class Task {
     @JoinColumn(name="courier_id")
     private Courier courier;
 
-    @ManyToMany(fetch =FetchType.LAZY,cascade = CascadeType.ALL)
-    @JoinTable(name="street_channel",joinColumns = {
-            @JoinColumn(name = "channel_id",nullable = false,updatable = false)},
-            inverseJoinColumns = {@JoinColumn(name="street_id",nullable = false,updatable = false)}
-    )
-    private Set<Address> addresses = new HashSet<Address>(0);
+    @OneToMany(fetch = FetchType.LAZY,cascade=CascadeType.ALL,mappedBy = "task")
+    private Set<TaskAddressResultLink> taskAddressResultLinks = new HashSet<TaskAddressResultLink>(0);
 
 
     public Task() {
+    }
+
+    public Set<TaskAddressResultLink> getTaskAddressResultLinks() {
+        return taskAddressResultLinks;
+    }
+
+    public void setTaskAddressResultLinks(Set<TaskAddressResultLink> taskAddressResultLinks) {
+        this.taskAddressResultLinks = taskAddressResultLinks;
     }
 
     public Courier getCourier() {

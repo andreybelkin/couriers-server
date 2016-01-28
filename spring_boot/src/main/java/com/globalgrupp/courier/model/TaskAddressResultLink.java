@@ -16,13 +16,15 @@ public class TaskAddressResultLink {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
     @JoinColumn(name = "task_id")
     private Task task;
 
+    @ManyToOne
     @JoinColumn(name = "address_id")
     private Address address;
 
-    @OneToMany(fetch = FetchType.LAZY,cascade=CascadeType.ALL,mappedBy = "taskaddressresultlink")
+    @OneToMany(fetch = FetchType.LAZY,cascade=CascadeType.ALL,mappedBy = "taskAddressResultLink")
     private Set<TaskResult> results=new HashSet<TaskResult>(0);
 
     public TaskAddressResultLink() {

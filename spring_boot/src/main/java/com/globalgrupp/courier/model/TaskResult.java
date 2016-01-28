@@ -14,7 +14,7 @@ public class TaskResult {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
+    @ManyToOne
     @JoinColumn(name = "task_addresses")
     private TaskAddressResultLink taskAddressResultLink;
 
