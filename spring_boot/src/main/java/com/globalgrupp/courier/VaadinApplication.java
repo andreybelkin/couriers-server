@@ -6,16 +6,19 @@ package com.globalgrupp.courier;
 
 import com.globalgrupp.courier.model.Address;
 import com.globalgrupp.courier.util.HibernateUtil;
+import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.*;
 import org.apache.poi.ss.usermodel.*;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.vaadin.spring.annotation.VaadinUI;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.util.List;
 
 //@Theme("valo")
 //@SpringUI
@@ -24,6 +27,7 @@ public class VaadinApplication extends  UI{
     private static final long serialVersionUID = 1L;
 
     final Embedded image = new Embedded("Uploaded Image");
+
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
@@ -38,6 +42,16 @@ public class VaadinApplication extends  UI{
         Panel panel = new Panel();
         Layout panelContent = new VerticalLayout();
         panelContent.addComponents(upload, image);
+
+        Session session= HibernateUtil.getSessionFactory().openSession();
+        Query query=session.createQuery("from Address");
+        List<Address> addresses=query.list();
+        BeanItemContainer<Address> container =
+                new BeanItemContainer<Address>(Address.class, addresses);
+
+        Grid grid=new Grid(container);
+        grid.setColumnOrder("rayon","kv");
+        panelContent.addComponent(grid);
         panel.setContent(panelContent);
         setContent(panel);
     }
@@ -59,6 +73,31 @@ public class VaadinApplication extends  UI{
 
         }
         return null;
+    }
+
+
+
+    private void renderGrid(){
+        try{
+            Session session= HibernateUtil.getSessionFactory().openSession();
+            Query query=session.createQuery("from Adresses");
+            List<Address> addresses=query.list();
+            BeanItemContainer<Address> container =
+                    new BeanItemContainer<Address>(Address.class, addresses);
+
+            Grid grid=new Grid(container);
+            grid.setColumnOrder("rayon","kv");
+
+            Panel panel= (Panel)getContent();
+            Layout layout=(Layout)panel.getContent();
+            layout.addComponent(grid);
+            panel.setContent(layout);
+            setContent(panel);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
     }
 
     // Implement both receiver that saves upload in a file and
@@ -138,10 +177,14 @@ public class VaadinApplication extends  UI{
 
                 }
                 session.getTransaction().commit();
+//                renderGrid();
 
             }catch (Exception e){
                 e.printStackTrace();
             }
         }
     }
+
+
+
 }
