@@ -3,8 +3,8 @@ package com.globalgrupp.courier;
 /**
  * Created by Lenovo on 27.01.2016.
  */
+
 import com.vaadin.spring.internal.VaadinSessionScope;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +27,7 @@ public class App {
         //SpringApplication.run(App.class, args);
         new SpringApplicationBuilder().sources(App.class).web(true)
                 .logStartupInfo(true).showBanner(true).run(args);
+
 
     }
 

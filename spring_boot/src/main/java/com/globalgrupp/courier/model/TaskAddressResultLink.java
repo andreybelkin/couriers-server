@@ -1,5 +1,7 @@
 package com.globalgrupp.courier.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,10 +20,11 @@ public class TaskAddressResultLink {
 
     @ManyToOne
     @JoinColumn(name = "task_id")
+    @JsonBackReference
     private Task task;
 
     @ManyToOne
-    @JoinColumn(name = "address_id")
+    @JoinColumn(name = "addresses_id")
     private Address address;
 
     @OneToMany(fetch = FetchType.LAZY,cascade=CascadeType.ALL,mappedBy = "taskAddressResultLink")

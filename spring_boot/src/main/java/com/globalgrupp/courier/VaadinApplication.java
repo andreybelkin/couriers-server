@@ -9,11 +9,12 @@ import com.globalgrupp.courier.util.HibernateUtil;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.*;
 import org.apache.poi.ss.usermodel.*;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.vaadin.spring.annotation.VaadinUI;
+
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,7 +23,7 @@ import java.util.List;
 
 //@Theme("valo")
 //@SpringUI
-@VaadinUI
+@SpringUI(path = "/main")
 public class VaadinApplication extends  UI{
     private static final long serialVersionUID = 1L;
 
@@ -54,6 +55,7 @@ public class VaadinApplication extends  UI{
         panelContent.addComponent(grid);
         panel.setContent(panelContent);
         setContent(panel);
+
     }
 
 

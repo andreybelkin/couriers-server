@@ -105,12 +105,10 @@ CREATE TABLE `couriers`.`task_address_result_photo` (
 
 ALTER TABLE `couriers`.`addresses`
 CHANGE COLUMN `house_number` `house_number` VARCHAR(45) NULL DEFAULT NULL ;
-
 ALTER TABLE `couriers`.`addresses`
+CHANGE COLUMN `house_year` `house_year` VARCHAR(45) NULL DEFAULT NULL ,
 CHANGE COLUMN `key` `keya` VARCHAR(45) NULL DEFAULT NULL ;
 
-ALTER TABLE `couriers`.`addresses`
-CHANGE COLUMN `house_year` `house_year` VARCHAR(45) NULL DEFAULT NULL ;
 
 
 

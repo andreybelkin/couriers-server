@@ -1,5 +1,7 @@
 package com.globalgrupp.courier.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 
 /**
@@ -15,8 +17,20 @@ public class TaskResult {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "task_addresses")
+    @JoinColumn(name = "task_adresses_id")
+    @JsonBackReference
     private TaskAddressResultLink taskAddressResultLink;
+
+    @Transient
+    private long taskAddressResultLinkId;
+
+    public long getTaskAddressResultLinkId() {
+        return taskAddressResultLinkId;
+    }
+
+    public void setTaskAddressResultLinkId(long taskAddressResultLinkId) {
+        this.taskAddressResultLinkId = taskAddressResultLinkId;
+    }
 
     @Column(name="result")
     private Long result;

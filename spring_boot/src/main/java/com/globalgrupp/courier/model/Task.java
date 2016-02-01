@@ -1,5 +1,7 @@
 package com.globalgrupp.courier.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
@@ -28,7 +30,9 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name="courier_id")
+    @JsonBackReference
     private Courier courier;
+
 
     @OneToMany(fetch = FetchType.LAZY,cascade=CascadeType.ALL,mappedBy = "task")
     private Set<TaskAddressResultLink> taskAddressResultLinks = new HashSet<TaskAddressResultLink>(0);
