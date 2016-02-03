@@ -2,10 +2,15 @@ package com.globalgrupp.courier.controller;
 
 import com.globalgrupp.courier.model.*;
 import com.globalgrupp.courier.util.HibernateUtil;
+import org.apache.commons.io.IOUtils;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -96,4 +101,43 @@ public class ServiceController  {
         session.getTransaction().commit();
 
     }
+
+    @RequestMapping(value="/uploadFile", method=RequestMethod.PUT)
+    @ResponseBody
+    public Long convert(InputStream file){
+        try {
+            byte[] bytes = IOUtils.toByteArray(file);//new byte[1024];
+            LoadedFile lf =new LoadedFile();
+            lf.setData(bytes);
+            Session session= HibernateUtil.getSessionFactory().openSession();
+            session.beginTransaction();
+            session.save(lf);
+            session.getTransaction().commit();
+            return lf.getId();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @RequestMapping(value = "/getFile/{file_name}", method = RequestMethod.GET)
+    public void getFile(
+            @PathVariable("file_name") Long id,
+            HttpServletResponse response) {
+        try {
+            // get your file as InputStream
+            Session session= HibernateUtil.getSessionFactory().openSession();
+            LoadedFile lf=(LoadedFile)session.get(LoadedFile.class,id);
+            InputStream is = new ByteArrayInputStream(lf.getData());
+            // copy it to response's OutputStream
+            org.apache.commons.io.IOUtils.copy(is, response.getOutputStream());
+            response.flushBuffer();
+        } catch (IOException ex) {
+            //log.info("Error writing file to output stream. Filename was '{}'", fileName, ex);
+            throw new RuntimeException("IOError writing file to output stream");
+        }
+
+    }
+
+
+
 }

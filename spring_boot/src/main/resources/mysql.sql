@@ -109,6 +109,10 @@ ALTER TABLE `couriers`.`addresses`
 CHANGE COLUMN `house_year` `house_year` VARCHAR(45) NULL DEFAULT NULL ,
 CHANGE COLUMN `key` `keya` VARCHAR(45) NULL DEFAULT NULL ;
 
+ALTER TABLE `couriers`.`task_address_result`
+ADD COLUMN `location` VARCHAR(400) NULL AFTER `porch`;
+
+
 
 
 

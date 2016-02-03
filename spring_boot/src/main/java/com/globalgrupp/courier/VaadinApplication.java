@@ -7,6 +7,7 @@ package com.globalgrupp.courier;
 import com.globalgrupp.courier.model.Address;
 import com.globalgrupp.courier.util.HibernateUtil;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
@@ -14,7 +15,6 @@ import com.vaadin.ui.*;
 import org.apache.poi.ss.usermodel.*;
 import org.hibernate.Query;
 import org.hibernate.Session;
-
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -34,8 +34,8 @@ public class VaadinApplication extends  UI{
     protected void init(VaadinRequest vaadinRequest) {
         image.setVisible(false);
         ImageUploader receiver = new ImageUploader();
-        Upload upload = new Upload("Upload Here", receiver);
-        upload.setButtonCaption("Start Upload");
+        Upload upload = new Upload("Загрузить адреса", receiver);
+        upload.setButtonCaption("Начать");
         upload.addSucceededListener(receiver);
         upload.setReceiver(receiver);
 
@@ -51,11 +51,92 @@ public class VaadinApplication extends  UI{
                 new BeanItemContainer<Address>(Address.class, addresses);
 
         Grid grid=new Grid(container);
-        grid.setColumnOrder("rayon","kv");
+        grid.setWidth("100%");
+        grid.setColumnOrder("street","houseNumber");
+
+        // Create a header row to hold column filters
+        Grid.HeaderRow filterRow = grid.appendHeaderRow();
+
+// Set up a filter for all columns
+        for (Object pid: grid.getContainerDataSource()
+                .getContainerPropertyIds()) {
+            Grid.HeaderCell cell = filterRow.getCell(pid);
+
+            // Have an input field to use for filter
+            TextField filterField = new TextField();
+            filterField.setColumns(8);
+
+            // Update filter When the filter input is changed
+            filterField.addTextChangeListener(change -> {
+                // Can't modify filters so need to replace
+                container.removeContainerFilters(pid);
+
+                // (Re)create the filter if necessary
+                if (! change.getText().isEmpty())
+                    container.addContainerFilter(
+                            new SimpleStringFilter(pid,
+                                    change.getText(), true, false));
+            });
+            cell.setComponent(filterField);
+        }
         panelContent.addComponent(grid);
         panel.setContent(panelContent);
         setContent(panel);
 
+    }
+
+    private void setDefault(){
+        image.setVisible(false);
+        ImageUploader receiver = new ImageUploader();
+        Upload upload = new Upload("Загрузить адреса", receiver);
+        upload.setButtonCaption("Начать");
+        upload.addSucceededListener(receiver);
+        upload.setReceiver(receiver);
+
+// Put the components in a panel
+        Panel panel = new Panel();
+        Layout panelContent = new VerticalLayout();
+        panelContent.addComponents(upload, image);
+
+        Session session= HibernateUtil.getSessionFactory().openSession();
+        Query query=session.createQuery("from Address");
+        List<Address> addresses=query.list();
+        BeanItemContainer<Address> container =
+                new BeanItemContainer<Address>(Address.class, addresses);
+
+        Grid grid=new Grid(container);
+        grid.setWidth("100%");
+        grid.setColumnOrder("street","houseNumber");
+
+        // Create a header row to hold column filters
+        Grid.HeaderRow filterRow = grid.appendHeaderRow();
+
+// Set up a filter for all columns
+        for (Object pid: grid.getContainerDataSource()
+                .getContainerPropertyIds()) {
+            Grid.HeaderCell cell = filterRow.getCell(pid);
+
+            // Have an input field to use for filter
+            TextField filterField = new TextField();
+            filterField.setColumns(8);
+
+            // Update filter When the filter input is changed
+            filterField.addTextChangeListener(change -> {
+                // Can't modify filters so need to replace
+                container.removeContainerFilters(pid);
+
+                // (Re)create the filter if necessary
+                if (! change.getText().isEmpty())
+                    container.addContainerFilter(
+                            new SimpleStringFilter(pid,
+                                    change.getText(), true, false));
+            });
+            cell.setComponent(filterField);
+        }
+
+        panelContent.addComponent(grid);
+        panel.setContent(panelContent);
+        setContent(panel);
     }
 
 
@@ -179,6 +260,7 @@ public class VaadinApplication extends  UI{
 
                 }
                 session.getTransaction().commit();
+                setDefault();
 //                renderGrid();
 
             }catch (Exception e){

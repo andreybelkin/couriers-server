@@ -64,4 +64,9 @@ public class TaskAddressResultLink {
     public void setTask(Task task) {
         this.task = task;
     }
+
+    @Override
+    public String toString() {
+        return getAddress().getStreet()+" "+getAddress().getHouseNumber();
+    }
 }

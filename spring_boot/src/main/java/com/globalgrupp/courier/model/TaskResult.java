@@ -3,6 +3,7 @@ package com.globalgrupp.courier.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created by Lenovo on 27.01.2016.
@@ -32,6 +33,22 @@ public class TaskResult {
         this.taskAddressResultLinkId = taskAddressResultLinkId;
     }
 
+//    @Transient
+//    Link linkProperty;
+//
+//    public Link getLinkProperty() {
+//        if (getPhotoIds().size()>0){
+//            Link result=new Link("Вложение",new ExternalResource("http://46.146.171.6:8080/service/getFile/"+getPhotoIds().get(0).toString()));
+//            result.setTargetName("_blank");
+//            return result;
+//        }
+//        return null;
+//    }
+//
+//    public void setLinkProperty(Link linkProperty) {
+//        this.linkProperty = linkProperty;
+//    }
+
     @Column(name="result")
     private Long result;
 
@@ -40,6 +57,30 @@ public class TaskResult {
 
     @Column(name="porch")
     private String porch;
+
+    @ElementCollection
+    @CollectionTable(name="task_address_result_photo", joinColumns=@JoinColumn(name="result_id"))
+    @Column(name="photo_id")
+    private List<Long> photoIds;
+
+    @Column(name="location")
+    private String location;
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public List<Long> getPhotoIds() {
+        return photoIds;
+    }
+
+    public void setPhotoIds(List<Long> photoIds) {
+        this.photoIds = photoIds;
+    }
 
     public TaskResult(String comment, String porch, Long result, TaskAddressResultLink taskAddressResultLink) {
         this.comment = comment;
