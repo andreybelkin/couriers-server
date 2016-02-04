@@ -28,7 +28,7 @@ public class CourierController extends UI {
 
     private void setbaseContent(){
         Panel panel = new Panel();
-        Layout panelContent = new VerticalLayout();
+        VerticalLayout panelContent = new VerticalLayout();
 
         Session session= HibernateUtil.getSessionFactory().openSession();
         Query query=session.createQuery("from Courier");
@@ -45,6 +45,8 @@ public class CourierController extends UI {
                 setEditContent((Long)itemClickEvent.getItem().getItemProperty("id").getValue());
             }
         });
+        table.setWidth("50%");
+        table.setHeight("100%");
 
         table.setVisibleColumns("id","name","description");
         table.setColumnHeader("id","Номер");
@@ -53,8 +55,11 @@ public class CourierController extends UI {
 
         Label label=new Label("Список курьеров");
         panelContent.addComponent(label);
+        panelContent.setHeight("100%");
         panelContent.addComponent(table);
         panel.setContent(panelContent);
+        panel.setHeight("100%");
+        panelContent.setExpandRatio(table,1);
         setContent(panel);
     }
 

@@ -41,7 +41,7 @@ public class TaskController extends UI {
 
     private void setBaseContent(){
         Panel panel = new Panel();
-        Layout panelContent = new VerticalLayout();
+        VerticalLayout panelContent = new VerticalLayout();
 
         Session session= HibernateUtil.getSessionFactory().openSession();
         Query query=session.createQuery("from Task");
@@ -51,6 +51,15 @@ public class TaskController extends UI {
 
         Grid grid=new Grid(container);
         grid.setWidth("100%");
+        grid.setHeight("100%");
+        grid.getColumn("courier").setHeaderCaption("Курьер");
+        grid.getColumn("description").setHeaderCaption("Описание");
+        grid.getColumn("periodBegin").setHidden(true);
+        grid.getColumn("periodEnd").setHidden(true);
+        grid.getColumn("taskAddressResultLinks").setHeaderCaption("Список адресов");
+        grid.getColumn("id").setHidden(true);
+
+
         grid.addItemClickListener(new ItemClickEvent.ItemClickListener() {
             @Override
             public void itemClick(ItemClickEvent itemClickEvent) {
@@ -78,13 +87,17 @@ public class TaskController extends UI {
         panelContent.addComponent(button);
         panelContent.addComponent(btnTotalReport);
         panelContent.addComponent(grid);
+        panelContent.setHeight("100%");
+        panel.setHeight("100%");
         panel.setContent(panelContent);
+        panelContent.setExpandRatio(grid,1);
+
         setContent(panel);
     }
 
     private void renderTaskDetail(String taskIdStr){
         Panel panel = new Panel();
-        Layout panelContent = new VerticalLayout();
+        VerticalLayout panelContent = new VerticalLayout();
 
         Long taskId=new Long(taskIdStr);
         Session session= HibernateUtil.getSessionFactory().openSession();
@@ -142,11 +155,14 @@ public class TaskController extends UI {
                 totalGrid();
             }
         });
-
+        grid.setHeight("100%");
         panelContent.addComponent(backButton);
         panelContent.addComponent(btnTotalReport);
         panelContent.addComponent(grid);
+        panelContent.setHeight("100%");
+        panel.setHeight("100%");
         panel.setContent(panelContent);
+        panelContent.setExpandRatio(grid,1);
         setContent(panel);
 
     }
@@ -154,7 +170,7 @@ public class TaskController extends UI {
 
     private void totalGrid(){
         Panel panel = new Panel();
-        Layout panelContent = new VerticalLayout();
+        VerticalLayout panelContent = new VerticalLayout();
 
 
         List<TotalReport> totalReportList=new ArrayList<>();
@@ -206,7 +222,7 @@ public class TaskController extends UI {
         Table table=new Table();
         table.setContainerDataSource(container);
         table.setWidth("100%");
-        table.setHeight("100%");
+        //table.setHeight("100%");
 
         table.addItemClickListener(new ItemClickEvent.ItemClickListener() {
             @Override
@@ -229,8 +245,6 @@ public class TaskController extends UI {
         table.setColumnHeader("porchCount","Количество подъездов (Всего)");
         table.setColumnHeader("porchAddressCount","Количество подъездов (Отмечены)");
 
-
-
         Button btnBack=new Button("К списку задач");
         btnBack.addClickListener(new Button.ClickListener() {
             @Override
@@ -238,12 +252,13 @@ public class TaskController extends UI {
                 setBaseContent();
             }
         });
-
-
-
+        table.setHeight("100%");
         panelContent.addComponent(btnBack);
         panelContent.addComponent(table);
+        panelContent.setHeight("100%");
+        panel.setHeight("100%");
         panel.setContent(panelContent);
+        panelContent.setExpandRatio(table,1);
         setContent(panel);
     }
 
@@ -251,7 +266,7 @@ public class TaskController extends UI {
 
     private void createTask(){
         Panel panel = new Panel();
-        Layout panelContent = new VerticalLayout();
+        VerticalLayout panelContent = new VerticalLayout();
         Session session= HibernateUtil.getSessionFactory().openSession();
          tfName = new TextField("");
 
@@ -277,6 +292,9 @@ public class TaskController extends UI {
 
         Grid grid=new Grid(container);
 
+
+
+
         Button buttonAdd=new Button("Сохранить");
         buttonAdd.addClickListener(new Button.ClickListener() {
             @Override
@@ -297,24 +315,38 @@ public class TaskController extends UI {
         grid.setWidth("100%");
         grid.setColumnOrder("street","houseNumber");
 
-        // Create a header row to hold column filters
+        grid.getColumn("street").setHeaderCaption("Улица");
+        grid.getColumn("houseNumber").setHeaderCaption("Дом №");
+        grid.getColumn("apartmentCount").setHeaderCaption("Количество квартир");
+        grid.getColumn("cityRayon").setHeaderCaption("Район");
+        grid.getColumn("comment").setHeaderCaption("Коментарий");
+        grid.getColumn("houseQuality").setHeaderCaption("Уровень дома");
+        grid.getColumn("houseYear").setHeaderCaption("Год постройки(сдачи)");
+        grid.getColumn("key").setHeaderCaption("Ключ");
+        grid.getColumn("kv").setHeaderCaption("Кв.");
+        grid.getColumn("lastUpdate").setHeaderCaption("Последнее обновление");
+        grid.getColumn("levelCount").setHeaderCaption("Этажность");
+        grid.getColumn("novostroyka").setHeaderCaption("Новостройка");
+        grid.getColumn("porchCount").setHeaderCaption("Количество подъездов");
+        grid.getColumn("postboxQuality").setHeaderCaption("Состояние ящиков");
+        grid.getColumn("rayon").setHeaderCaption("Район");
+        grid.getColumn("id").setHidden(true);
+        grid.setHeight("100%");
+
+
+
+
         Grid.HeaderRow filterRow = grid.appendHeaderRow();
 
-// Set up a filter for all columns
         for (Object pid: grid.getContainerDataSource()
                 .getContainerPropertyIds()) {
             Grid.HeaderCell cell = filterRow.getCell(pid);
 
-            // Have an input field to use for filter
             TextField filterField = new TextField();
             filterField.setColumns(8);
 
-            // Update filter When the filter input is changed
             filterField.addTextChangeListener(change -> {
-                // Can't modify filters so need to replace
                 container.removeContainerFilters(pid);
-
-                // (Re)create the filter if necessary
                 if (! change.getText().isEmpty())
                     container.addContainerFilter(
                             new SimpleStringFilter(pid,
@@ -326,7 +358,10 @@ public class TaskController extends UI {
         panelContent.addComponent(new Label("Адреса"));
         panelContent.addComponent(grid);
         panelContent.addComponent(buttonAdd);
+        //panelContent.setHeight("100%");
         panel.setContent(panelContent);
+        //panel.setHeight("100%");
+        //panelContent.setExpandRatio();
         setContent(panel);
     }
     private void saveTask(){

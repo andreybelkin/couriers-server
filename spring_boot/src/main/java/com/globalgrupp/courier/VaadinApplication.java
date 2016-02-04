@@ -32,56 +32,7 @@ public class VaadinApplication extends  UI{
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
-        image.setVisible(false);
-        ImageUploader receiver = new ImageUploader();
-        Upload upload = new Upload("Загрузить адреса", receiver);
-        upload.setButtonCaption("Начать");
-        upload.addSucceededListener(receiver);
-        upload.setReceiver(receiver);
-
-// Put the components in a panel
-        Panel panel = new Panel();
-        Layout panelContent = new VerticalLayout();
-        panelContent.addComponents(upload, image);
-
-        Session session= HibernateUtil.getSessionFactory().openSession();
-        Query query=session.createQuery("from Address");
-        List<Address> addresses=query.list();
-        BeanItemContainer<Address> container =
-                new BeanItemContainer<Address>(Address.class, addresses);
-
-        Grid grid=new Grid(container);
-        grid.setWidth("100%");
-        grid.setColumnOrder("street","houseNumber");
-
-        // Create a header row to hold column filters
-        Grid.HeaderRow filterRow = grid.appendHeaderRow();
-
-// Set up a filter for all columns
-        for (Object pid: grid.getContainerDataSource()
-                .getContainerPropertyIds()) {
-            Grid.HeaderCell cell = filterRow.getCell(pid);
-
-            // Have an input field to use for filter
-            TextField filterField = new TextField();
-            filterField.setColumns(8);
-
-            // Update filter When the filter input is changed
-            filterField.addTextChangeListener(change -> {
-                // Can't modify filters so need to replace
-                container.removeContainerFilters(pid);
-
-                // (Re)create the filter if necessary
-                if (! change.getText().isEmpty())
-                    container.addContainerFilter(
-                            new SimpleStringFilter(pid,
-                                    change.getText(), true, false));
-            });
-            cell.setComponent(filterField);
-        }
-        panelContent.addComponent(grid);
-        panel.setContent(panelContent);
-        setContent(panel);
+        setDefault();
 
     }
 
@@ -95,7 +46,7 @@ public class VaadinApplication extends  UI{
 
 // Put the components in a panel
         Panel panel = new Panel();
-        Layout panelContent = new VerticalLayout();
+        VerticalLayout panelContent = new VerticalLayout();
         panelContent.addComponents(upload, image);
 
         Session session= HibernateUtil.getSessionFactory().openSession();
@@ -107,6 +58,24 @@ public class VaadinApplication extends  UI{
         Grid grid=new Grid(container);
         grid.setWidth("100%");
         grid.setColumnOrder("street","houseNumber");
+
+        grid.getColumn("street").setHeaderCaption("Улица");
+        grid.getColumn("houseNumber").setHeaderCaption("Дом №");
+        grid.getColumn("apartmentCount").setHeaderCaption("Количество квартир");
+        grid.getColumn("cityRayon").setHeaderCaption("Район");
+        grid.getColumn("comment").setHeaderCaption("Коментарий");
+        grid.getColumn("houseQuality").setHeaderCaption("Уровень дома");
+        grid.getColumn("houseYear").setHeaderCaption("Год постройки(сдачи)");
+        grid.getColumn("key").setHeaderCaption("Ключ");
+        grid.getColumn("kv").setHeaderCaption("Кв.");
+        grid.getColumn("lastUpdate").setHeaderCaption("Последнее обновление");
+        grid.getColumn("levelCount").setHeaderCaption("Этажность");
+        grid.getColumn("novostroyka").setHeaderCaption("Новостройка");
+        grid.getColumn("porchCount").setHeaderCaption("Количество подъездов");
+        grid.getColumn("postboxQuality").setHeaderCaption("Состояние ящиков");
+        grid.getColumn("rayon").setHeaderCaption("Район");
+        grid.getColumn("id").setHidden(true);
+        grid.setHeight("100%");
 
         // Create a header row to hold column filters
         Grid.HeaderRow filterRow = grid.appendHeaderRow();
@@ -135,7 +104,10 @@ public class VaadinApplication extends  UI{
         }
 
         panelContent.addComponent(grid);
+        panelContent.setHeight("100%");
         panel.setContent(panelContent);
+        panel.setHeight("100%");
+        panelContent.setExpandRatio(grid,1);
         setContent(panel);
     }
 
