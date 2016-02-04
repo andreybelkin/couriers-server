@@ -25,6 +25,16 @@ public class Courier {
     @OneToMany(fetch = FetchType.LAZY,cascade=CascadeType.ALL,mappedBy = "courier")
     private Set<Task> tasks=new HashSet<Task>(0);
 
+    @Column(name = "description")
+    private String description;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public Courier() {
     }
@@ -55,6 +65,10 @@ public class Courier {
 
     @Override
     public String toString() {
-        return "Курьер "+getId().toString();
+        if (getName()!=null)
+            return "Курьер "+getId().toString()+"("+getName()+")";
+        else{
+            return "Курьер "+getId().toString();
+        }
     }
 }

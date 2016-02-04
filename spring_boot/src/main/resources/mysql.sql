@@ -112,6 +112,9 @@ CHANGE COLUMN `key` `keya` VARCHAR(45) NULL DEFAULT NULL ;
 ALTER TABLE `couriers`.`task_address_result`
 ADD COLUMN `location` VARCHAR(400) NULL AFTER `porch`;
 
+ALTER TABLE `couriers`.`couriers`
+ADD COLUMN `description` VARCHAR(500) NULL AFTER `app_push_id`;
+
 
 
 

@@ -1,0 +1,103 @@
+package com.globalgrupp.courier.controller;
+
+import com.globalgrupp.courier.model.Courier;
+import com.globalgrupp.courier.model.Task;
+import com.globalgrupp.courier.util.HibernateUtil;
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
+import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.server.VaadinRequest;
+import com.vaadin.spring.annotation.SpringUI;
+import com.vaadin.ui.*;
+import org.hibernate.Query;
+import org.hibernate.Session;
+
+import java.util.List;
+
+/**
+ * Created by п on 04.02.2016.
+ */
+
+@SpringUI(path="/courier")
+public class CourierController extends UI {
+
+    @Override
+    protected void init(VaadinRequest vaadinRequest) {
+        setbaseContent();
+    }
+
+    private void setbaseContent(){
+        Panel panel = new Panel();
+        Layout panelContent = new VerticalLayout();
+
+        Session session= HibernateUtil.getSessionFactory().openSession();
+        Query query=session.createQuery("from Courier");
+        List<Courier> courierList=query.list();
+
+        BeanItemContainer<Courier> container =
+                new BeanItemContainer<Courier>(Courier.class, courierList);
+
+        Table table=new Table();
+        table.setContainerDataSource(container);
+        table.addItemClickListener(new ItemClickEvent.ItemClickListener() {
+            @Override
+            public void itemClick(ItemClickEvent itemClickEvent) {
+                setEditContent((Long)itemClickEvent.getItem().getItemProperty("id").getValue());
+            }
+        });
+
+        table.setVisibleColumns("id","name","description");
+        table.setColumnHeader("id","Номер");
+        table.setColumnHeader("name","ФИО");
+        table.setColumnHeader("descripion","Описание/комментарий");
+
+        Label label=new Label("Список курьеров");
+        panelContent.addComponent(label);
+        panelContent.addComponent(table);
+        panel.setContent(panelContent);
+        setContent(panel);
+    }
+
+
+    private void setEditContent(Long id){
+        Panel panel = new Panel();
+        Layout panelContent = new VerticalLayout();
+
+        Session session= HibernateUtil.getSessionFactory().openSession();
+        Courier courier=(Courier)session.get(Courier.class,id);
+
+        Label label=new Label("Курьер "+id.toString());
+
+        Label label1=new Label("ФИО:");
+        TextField tfName=new TextField();
+        if (courier.getName()!=null)
+        tfName.setValue(courier.getName());
+
+        Label label2=new Label("Описание/комментарий:");
+        TextField tfDescription=new TextField();
+        if (courier.getDescription()!=null)
+        tfDescription.setValue(courier.getDescription());
+
+        panelContent.addComponent(label);
+        panelContent.addComponent(label1);
+        panelContent.addComponent(tfName);
+        panelContent.addComponent(label2);
+        panelContent.addComponent(tfDescription);
+
+        Button btnSave=new Button("сохранить");
+        btnSave.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                courier.setName(tfName.getValue());
+                courier.setDescription(tfDescription.getValue());
+                session.beginTransaction();
+                session.save(courier);
+                session.getTransaction().commit();
+                setbaseContent();
+            }
+        });
+        panelContent.addComponent(btnSave);
+        panel.setContent(panelContent);
+        setContent(panel);
+    }
+}
