@@ -88,4 +88,9 @@ public class Task {
     public void setPeriodEnd(Date periodEnd) {
         this.periodEnd = periodEnd;
     }
+
+    @Override
+    public String toString() {
+        return getDescription();
+    }
 }

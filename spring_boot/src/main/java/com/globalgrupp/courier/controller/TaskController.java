@@ -66,7 +66,17 @@ public class TaskController extends UI {
                 createTask();
             }
         });
+
+        Button btnTotalReport=new Button("Сводный отчет");
+        btnTotalReport.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                totalGrid();
+            }
+        });
+
         panelContent.addComponent(button);
+        panelContent.addComponent(btnTotalReport);
         panelContent.addComponent(grid);
         panel.setContent(panelContent);
         setContent(panel);
@@ -96,8 +106,6 @@ public class TaskController extends UI {
         Table grid=new Table();
         grid.setContainerDataSource(container);
         grid.setWidth("100%");
-
-
         grid.addGeneratedColumn("photoIds", new Table.ColumnGenerator() {
             @Override
             public Object generateCell(Table table, Object itemId, Object columnId) {
@@ -119,9 +127,6 @@ public class TaskController extends UI {
             }
         });
 
-
-//        grid.addColumn("Photo").setRenderer(new )
-
         Button backButton=new Button("К списку задач");
         backButton.addClickListener(new Button.ClickListener() {
             @Override
@@ -130,7 +135,16 @@ public class TaskController extends UI {
             }
         });
 
+        Button btnTotalReport=new Button("К сводному реестру");
+        btnTotalReport.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                totalGrid();
+            }
+        });
+
         panelContent.addComponent(backButton);
+        panelContent.addComponent(btnTotalReport);
         panelContent.addComponent(grid);
         panel.setContent(panelContent);
         setContent(panel);
@@ -153,33 +167,82 @@ public class TaskController extends UI {
             Courier courier=courierList.get(i);
 
             Query query1=session.createQuery("from Task where courier_id=:courierId");
-            query1.setParameter("courierId");
-            List<Task> taskList=query.list();
+            query1.setParameter("courierId",courier.getId());
+            List<Task> taskList=query1.list();
             for (int k=0;k<taskList.size();k++){
                 List<TaskAddressResultLink> taskAddressResultLinkList=new ArrayList<TaskAddressResultLink>(taskList.get(k).getTaskAddressResultLinks());
+                int addressesCount=0;
+                int porchCount=0;
+                int courierAddressesCount=0;
+                int courierPorchCount=0;
                 for (int z=0;z<taskAddressResultLinkList.size();z++){
+                    addressesCount++;
+                    if (taskAddressResultLinkList.get(z).getAddress().getPorchCount()!=null){
+                        porchCount+=taskAddressResultLinkList.get(z).getAddress().getPorchCount().intValue();
+                    }
 
+                    ArrayList<TaskResult> results=new ArrayList<TaskResult>(taskAddressResultLinkList.get(z).getResults());
+                    if (results.size()>0){
+                        courierAddressesCount++;
+                    }
+                    for (int z1=0;z1<results.size();z1++){
+                        courierPorchCount++;
+                    }
                 }
                 TotalReport totalReport=new TotalReport();
+                totalReport.setTask(taskList.get(k));
                 totalReport.setCourier(courier);
-
+                totalReport.setAddressCount(String.valueOf(addressesCount));
+                totalReport.setPorchCount(String.valueOf(porchCount));
+                totalReport.setCourierAddressCount(String.valueOf(courierAddressesCount));
+                totalReport.setPorchCount(String.valueOf(courierPorchCount));
                 totalReportList.add(totalReport);
             }
-
         }
-
-
 
         BeanItemContainer<TotalReport> container =
                 new BeanItemContainer<TotalReport>(TotalReport.class, totalReportList);
 
         Table table=new Table();
         table.setContainerDataSource(container);
+        table.setWidth("100%");
+        table.setHeight("100%");
+
+        table.addItemClickListener(new ItemClickEvent.ItemClickListener() {
+            @Override
+            public void itemClick(ItemClickEvent itemClickEvent) {
+                if (itemClickEvent.isDoubleClick()){
+                    renderTaskDetail(((Task)(itemClickEvent.getItem().getItemProperty("task").getValue())).getId().toString());
+                }
+            }
+        });
+
+
+        //table.setVisibleColumns();
+        table.setVisibleColumns("courier","task","taskStartDate","taskEndDate","addressCount","courierAddressCount","porchCount","porchAddressCount");
+        table.setColumnHeader("courier","Курьер");
+        table.setColumnHeader("task","Задача");
+        table.setColumnHeader("taskStartDate","Начало задачи");
+        table.setColumnHeader("taskEndDate","Конец задачи");
+        table.setColumnHeader("addressCount","Количество адресов (Всего)");
+        table.setColumnHeader("courierAddressCount","Количество адресов (Отмечены)");
+        table.setColumnHeader("porchCount","Количество подъездов (Всего)");
+        table.setColumnHeader("porchAddressCount","Количество подъездов (Отмечены)");
 
 
 
+        Button btnBack=new Button("К списку задач");
+        btnBack.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                setBaseContent();
+            }
+        });
 
 
+
+        panelContent.addComponent(btnBack);
+        panelContent.addComponent(table);
         panel.setContent(panelContent);
         setContent(panel);
     }
