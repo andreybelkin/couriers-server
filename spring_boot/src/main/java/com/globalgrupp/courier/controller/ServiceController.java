@@ -90,7 +90,7 @@ public class ServiceController  {
     }
 
     @RequestMapping(value="/createResult", method= RequestMethod.POST)
-    public void getTaskById(@RequestBody TaskResult result){
+    public void createResult(@RequestBody TaskResult result){
         Session session= HibernateUtil.getSessionFactory().openSession();
         Query query=session.createQuery("from TaskAddressResultLink where id=:id ");
         query.setParameter("id",result.getTaskAddressResultLinkId());

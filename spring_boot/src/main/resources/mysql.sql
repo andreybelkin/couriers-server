@@ -116,6 +116,11 @@ ALTER TABLE `couriers`.`couriers`
 ADD COLUMN `description` VARCHAR(500) NULL AFTER `app_push_id`;
 
 
+ALTER TABLE `couriers`.`task_address_result`
+ADD COLUMN `correct_place` TINYINT(1) NULL AFTER `location`;
+
+update couriers.task_address_result set correct_place=0 where id!=0;
+
 
 
 

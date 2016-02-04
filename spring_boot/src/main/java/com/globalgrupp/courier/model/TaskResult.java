@@ -1,6 +1,7 @@
 package com.globalgrupp.courier.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.List;
@@ -65,6 +66,18 @@ public class TaskResult {
 
     @Column(name="location")
     private String location;
+
+    @Column(name="correct_place")
+    @Type(type = "org.hibernate.type.NumericBooleanType")
+    private boolean correctPlace;
+
+    public boolean isCorrectPlace() {
+        return correctPlace;
+    }
+
+    public void setCorrectPlace(boolean correctPlace) {
+        this.correctPlace = correctPlace;
+    }
 
     public String getLocation() {
         return location;

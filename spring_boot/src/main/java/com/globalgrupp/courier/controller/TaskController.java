@@ -136,7 +136,6 @@ public class TaskController extends UI {
                     return hbox;
                 }
                 return null;
-
             }
         });
 
@@ -155,6 +154,14 @@ public class TaskController extends UI {
                 totalGrid();
             }
         });
+        grid.setVisibleColumns("comment","correctPlace","photoIds","porch","location","taskAddressResultLink");
+        grid.setColumnHeader("comment","Комментарий");
+        grid.setColumnHeader("correctPlace","Совпадает местоположение");
+        grid.setColumnHeader("location","Адрес курьера");
+        grid.setColumnHeader("photoIds","Вложение");
+        grid.setColumnHeader("porch","Подъезд");
+        grid.setColumnHeader("taskAddressResultLink","Адрес задачи");
+
         grid.setHeight("100%");
         panelContent.addComponent(backButton);
         panelContent.addComponent(btnTotalReport);
