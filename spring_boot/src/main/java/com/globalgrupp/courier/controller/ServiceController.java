@@ -138,6 +138,30 @@ public class ServiceController  {
 
     }
 
+    @RequestMapping(value = "/getCourierInfo/{app_id}", method = RequestMethod.GET)
+    public Courier getCourierInfo(
+            @PathVariable("app_id") String id,
+            HttpServletResponse response) {
+        try {
+            // get your file as InputStream
+            Session session= HibernateUtil.getSessionFactory().openSession();
+            Query query=session.createQuery("from Courier where app_push_id=:appId");
+            query.setParameter("appId",id);
+            List<Courier> courierList=query.list();
+            if (courierList.size()==0){
+                //// TODO: 04.02.2016  wtf wrong appId?
+                return null;
+            }else {
+                return courierList.get(0);
+            }
+        } catch (Exception ex) {
+            //log.info("Error writing file to output stream. Filename was '{}'", fileName, ex);
+            ex.printStackTrace();
+            throw ex;
+        }
+
+    }
+
 
 
 }
