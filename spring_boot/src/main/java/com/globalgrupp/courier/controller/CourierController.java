@@ -1,9 +1,7 @@
 package com.globalgrupp.courier.controller;
 
 import com.globalgrupp.courier.model.Courier;
-import com.globalgrupp.courier.model.Task;
 import com.globalgrupp.courier.util.HibernateUtil;
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.server.VaadinRequest;

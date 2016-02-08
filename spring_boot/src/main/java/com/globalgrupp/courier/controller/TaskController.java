@@ -107,7 +107,7 @@ public class TaskController extends UI {
 
         List<TaskResult> taskResults=new ArrayList<TaskResult>();
         for (int i=0;i<taskAddressResultLinkListquery.size();i++){
-            TaskAddressResultLink q=taskAddressResultLinkListquery.get(0);
+            TaskAddressResultLink q=taskAddressResultLinkListquery.get(i);
             if (q.getResults()!=null && q.getResults().size()>0){
                 taskResults.addAll(new ArrayList<TaskResult>(q.getResults()));
             }
@@ -218,7 +218,7 @@ public class TaskController extends UI {
                 totalReport.setAddressCount(String.valueOf(addressesCount));
                 totalReport.setPorchCount(String.valueOf(porchCount));
                 totalReport.setCourierAddressCount(String.valueOf(courierAddressesCount));
-                totalReport.setPorchCount(String.valueOf(courierPorchCount));
+                totalReport.setPorchAddressCount(String.valueOf(courierPorchCount));
                 totalReportList.add(totalReport);
             }
         }

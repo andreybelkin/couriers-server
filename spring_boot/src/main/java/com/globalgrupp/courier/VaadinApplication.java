@@ -6,20 +6,27 @@ package com.globalgrupp.courier;
 
 import com.globalgrupp.courier.model.Address;
 import com.globalgrupp.courier.util.HibernateUtil;
+import com.myjeeva.poi.ExcelReader;
+import com.myjeeva.poi.ExcelSheetCallback;
+import com.myjeeva.poi.ExcelWorkSheetHandler;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.filter.SimpleStringFilter;
 import com.vaadin.server.Page;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.*;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.util.IOUtils;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 //@Theme("valo")
 //@SpringUI
@@ -166,7 +173,7 @@ public class VaadinApplication extends  UI{
             FileOutputStream fos = null; // Stream to write to
             try {
                 // Open the file for writing.
-                file = new File("/temp/uploads/" + filename);
+                file = new File("/tmp/" + filename);
                 fos = new FileOutputStream(file);
             } catch (final java.io.FileNotFoundException e) {
                 new Notification("Could not open file<br/>",
@@ -179,16 +186,135 @@ public class VaadinApplication extends  UI{
         }
 
         public void uploadSucceeded(Upload.SucceededEvent event) {
+
+
+//            try {
+//                Workbook wb=WorkbookFactory.create(file);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            } catch (InvalidFormatException e) {
+//                e.printStackTrace();
+//            }
+            InputStream inputStream = null;
+            try {
+                inputStream = new FileInputStream(file);
+
+
+            // Excel Cell Mapping
+            Map<String, String> cellMapping = new HashMap<String, String>();
+            cellMapping.put("HEADER",
+                    "street");
+//            cellMapping.put("A", "rayon");
+//            cellMapping.put("B", "kv");
+            cellMapping.put("C", "street");
+//            cellMapping.put("D", "emailId");
+//            cellMapping.put("E", "dob");
+//            cellMapping.put("F", "salary");
+
+            // The package open is instantaneous, as it should be.
+            OPCPackage pkg = null;
+            try {
+                ExcelWorkSheetHandler<Address> workSheetHandler = new ExcelWorkSheetHandler<Address>(Address.class, cellMapping);
+//                  ExcelWorkSheetRowCallbackHandler sheetRowCallbackHandler = new ExcelWorkSheetRowCallbackHandler(
+//                    new ExcelRowContentCallback() {
+//                        @Override
+//                        public void processRow(int rowNum,    Map<String, String> map) {
+//                            // Do any custom row processing here, such as save
+//                            // to database
+//                            // Convert map values, as necessary, to dates or
+//                            // parse as currency, etc
+//                            System.out.println("rowNum=" + rowNum + ", map=" + map);
+//                        }
+//                    });
+
+                pkg = OPCPackage.open(inputStream);
+                ExcelSheetCallback sheetCallback = new ExcelSheetCallback() {
+                    private int sheetNumber = 0;
+
+                    @Override
+                    public void startSheet(int sheetNum) {
+                        this.sheetNumber = sheetNum;
+                        System.out.println("Started processing sheet number=" + sheetNumber);
+                    }
+
+                    @Override
+                    public void endSheet() {
+                        System.out.println("Processing completed for sheet number=" + sheetNumber);
+                    }
+                };
+
+                System.out.println("Constructor: pkg, workSheetHandler, sheetCallback");
+                ExcelReader example1 = new ExcelReader(pkg, workSheetHandler, sheetCallback);
+                example1.process();
+
+                if (workSheetHandler.getValueList().isEmpty()) {
+                    // No data present
+//                    LOG.error("sHandler.getValueList() is empty");
+                } else {
+//                    LOG.info(workSheetHandler.getValueList().size()
+//                            + " no. of records read from given excel worksheet successfully.");
+                    // Displaying data ead from Excel file
+                    List<Address> addressList=workSheetHandler.getValueList();
+                }
+
+                System.out.println("nConstructor: filePath, workSheetHandler, sheetCallback");
+//                ExcelReader example2 = new ExcelReader(SAMPLE_PERSON_DATA_FILE_PATH,
+//                        workSheetHandler, sheetCallback);
+//                example2.process();
+
+                System.out.println("nConstructor: file, workSheetHandler, sheetCallback");
+//                ExcelReader example3 = new ExcelReader(file, workSheetHandler, null);
+//                example3.process();
+            } catch (RuntimeException are) {
+//                LOG.error(are.getMessage(), are.getCause());
+            } catch (InvalidFormatException ife) {
+//                LOG.error(ife.getMessage(), ife.getCause());
+            } catch (IOException ioe) {
+//                LOG.error(ioe.getMessage(), ioe.getCause());
+            } finally {
+                IOUtils.closeQuietly(inputStream);
+                try {
+                    if (null != pkg) {
+                        pkg.close();
+                    }
+                } catch (IOException e) {
+                    // just ignore IO exception
+                }
+            }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             try{
-                Workbook wb = WorkbookFactory.create(file);
+                Workbook wb =  WorkbookFactory.create(file);
+//                Workbook workBook = new SXSSFWorkbook(200);
 
                 Session session= HibernateUtil.getSessionFactory().openSession();
                 session.beginTransaction();
                 Sheet sheet=wb.getSheetAt(0);
                 int i=1;
                 Row row=sheet.getRow(i);
-
+                int o=0;
                 while (row!=null){
+//                    if (o==0){
+//                        session.beginTransaction();
+//                    }
                     Address address=new Address();
                     try{
                         if (row.getCell(0)!=null && getCellStringValueCusom(row.getCell(0))!=null)
@@ -225,13 +351,22 @@ public class VaadinApplication extends  UI{
                             address.setNovostroyka(getCellStringValueCusom(row.getCell(15)));
                         session.save(address);
                         i++;
+//                        if (o==100){
+//                            session.getTransaction().commit();
+//                            o=0;
+//                        }
                         row=sheet.getRow(i);
+                        address=null;
+                        if (row.getCell(0)==null && getCellStringValueCusom(row.getCell(0))==null){
+                            break;
+                        }
                     }catch (Exception e){
                         e.printStackTrace();
                     }
-
                 }
-                session.getTransaction().commit();
+//                if (o!=0){
+                    session.getTransaction().commit();
+//                }
                 setDefault();
 //                renderGrid();
 
