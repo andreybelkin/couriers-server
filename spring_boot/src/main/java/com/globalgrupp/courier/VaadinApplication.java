@@ -84,7 +84,6 @@ public class VaadinApplication extends  UI{
         grid.getColumn("id").setHidden(true);
         grid.setHeight("100%");
 
-        // Create a header row to hold column filters
         Grid.HeaderRow filterRow = grid.appendHeaderRow();
 
 // Set up a filter for all columns
@@ -195,97 +194,97 @@ public class VaadinApplication extends  UI{
 //            } catch (InvalidFormatException e) {
 //                e.printStackTrace();
 //            }
-            InputStream inputStream = null;
-            try {
-                inputStream = new FileInputStream(file);
-
-
-            // Excel Cell Mapping
-            Map<String, String> cellMapping = new HashMap<String, String>();
-            cellMapping.put("HEADER",
-                    "street");
-//            cellMapping.put("A", "rayon");
-//            cellMapping.put("B", "kv");
-            cellMapping.put("C", "street");
-//            cellMapping.put("D", "emailId");
-//            cellMapping.put("E", "dob");
-//            cellMapping.put("F", "salary");
-
-            // The package open is instantaneous, as it should be.
-            OPCPackage pkg = null;
-            try {
-                ExcelWorkSheetHandler<Address> workSheetHandler = new ExcelWorkSheetHandler<Address>(Address.class, cellMapping);
-//                  ExcelWorkSheetRowCallbackHandler sheetRowCallbackHandler = new ExcelWorkSheetRowCallbackHandler(
-//                    new ExcelRowContentCallback() {
-//                        @Override
-//                        public void processRow(int rowNum,    Map<String, String> map) {
-//                            // Do any custom row processing here, such as save
-//                            // to database
-//                            // Convert map values, as necessary, to dates or
-//                            // parse as currency, etc
-//                            System.out.println("rowNum=" + rowNum + ", map=" + map);
-//                        }
-//                    });
-
-                pkg = OPCPackage.open(inputStream);
-                ExcelSheetCallback sheetCallback = new ExcelSheetCallback() {
-                    private int sheetNumber = 0;
-
-                    @Override
-                    public void startSheet(int sheetNum) {
-                        this.sheetNumber = sheetNum;
-                        System.out.println("Started processing sheet number=" + sheetNumber);
-                    }
-
-                    @Override
-                    public void endSheet() {
-                        System.out.println("Processing completed for sheet number=" + sheetNumber);
-                    }
-                };
-
-                System.out.println("Constructor: pkg, workSheetHandler, sheetCallback");
-                ExcelReader example1 = new ExcelReader(pkg, workSheetHandler, sheetCallback);
-                example1.process();
-
-                if (workSheetHandler.getValueList().isEmpty()) {
-                    // No data present
-//                    LOG.error("sHandler.getValueList() is empty");
-                } else {
-//                    LOG.info(workSheetHandler.getValueList().size()
-//                            + " no. of records read from given excel worksheet successfully.");
-                    // Displaying data ead from Excel file
-                    List<Address> addressList=workSheetHandler.getValueList();
-                }
-
-                System.out.println("nConstructor: filePath, workSheetHandler, sheetCallback");
-//                ExcelReader example2 = new ExcelReader(SAMPLE_PERSON_DATA_FILE_PATH,
-//                        workSheetHandler, sheetCallback);
-//                example2.process();
-
-                System.out.println("nConstructor: file, workSheetHandler, sheetCallback");
-//                ExcelReader example3 = new ExcelReader(file, workSheetHandler, null);
-//                example3.process();
-            } catch (RuntimeException are) {
-//                LOG.error(are.getMessage(), are.getCause());
-            } catch (InvalidFormatException ife) {
-//                LOG.error(ife.getMessage(), ife.getCause());
-            } catch (IOException ioe) {
-//                LOG.error(ioe.getMessage(), ioe.getCause());
-            } finally {
-                IOUtils.closeQuietly(inputStream);
-                try {
-                    if (null != pkg) {
-                        pkg.close();
-                    }
-                } catch (IOException e) {
-                    // just ignore IO exception
-                }
-            }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
+//            InputStream inputStream = null;
+//            try {
+//                inputStream = new FileInputStream(file);
+//
+//
+//            // Excel Cell Mapping
+//            Map<String, String> cellMapping = new HashMap<String, String>();
+//            cellMapping.put("HEADER",
+//                    "street");
+////            cellMapping.put("A", "rayon");
+////            cellMapping.put("B", "kv");
+//            cellMapping.put("C", "street");
+////            cellMapping.put("D", "emailId");
+////            cellMapping.put("E", "dob");
+////            cellMapping.put("F", "salary");
+//
+//            // The package open is instantaneous, as it should be.
+//            OPCPackage pkg = null;
+//            try {
+//                ExcelWorkSheetHandler<Address> workSheetHandler = new ExcelWorkSheetHandler<Address>(Address.class, cellMapping);
+////                  ExcelWorkSheetRowCallbackHandler sheetRowCallbackHandler = new ExcelWorkSheetRowCallbackHandler(
+////                    new ExcelRowContentCallback() {
+////                        @Override
+////                        public void processRow(int rowNum,    Map<String, String> map) {
+////                            // Do any custom row processing here, such as save
+////                            // to database
+////                            // Convert map values, as necessary, to dates or
+////                            // parse as currency, etc
+////                            System.out.println("rowNum=" + rowNum + ", map=" + map);
+////                        }
+////                    });
+//
+//                pkg = OPCPackage.open(inputStream);
+//                ExcelSheetCallback sheetCallback = new ExcelSheetCallback() {
+//                    private int sheetNumber = 0;
+//
+//                    @Override
+//                    public void startSheet(int sheetNum) {
+//                        this.sheetNumber = sheetNum;
+//                        System.out.println("Started processing sheet number=" + sheetNumber);
+//                    }
+//
+//                    @Override
+//                    public void endSheet() {
+//                        System.out.println("Processing completed for sheet number=" + sheetNumber);
+//                    }
+//                };
+//
+//                System.out.println("Constructor: pkg, workSheetHandler, sheetCallback");
+//                ExcelReader example1 = new ExcelReader(pkg, workSheetHandler, sheetCallback);
+//                example1.process();
+//
+//                if (workSheetHandler.getValueList().isEmpty()) {
+//                    // No data present
+////                    LOG.error("sHandler.getValueList() is empty");
+//                } else {
+////                    LOG.info(workSheetHandler.getValueList().size()
+////                            + " no. of records read from given excel worksheet successfully.");
+//                    // Displaying data ead from Excel file
+//                    List<Address> addressList=workSheetHandler.getValueList();
+//                }
+//
+//                System.out.println("nConstructor: filePath, workSheetHandler, sheetCallback");
+////                ExcelReader example2 = new ExcelReader(SAMPLE_PERSON_DATA_FILE_PATH,
+////                        workSheetHandler, sheetCallback);
+////                example2.process();
+//
+//                System.out.println("nConstructor: file, workSheetHandler, sheetCallback");
+////                ExcelReader example3 = new ExcelReader(file, workSheetHandler, null);
+////                example3.process();
+//            } catch (RuntimeException are) {
+////                LOG.error(are.getMessage(), are.getCause());
+//            } catch (InvalidFormatException ife) {
+////                LOG.error(ife.getMessage(), ife.getCause());
+//            } catch (IOException ioe) {
+////                LOG.error(ioe.getMessage(), ioe.getCause());
+//            } finally {
+//                IOUtils.closeQuietly(inputStream);
+//                try {
+//                    if (null != pkg) {
+//                        pkg.close();
+//                    }
+//                } catch (IOException e) {
+//                    // just ignore IO exception
+//                }
+//            }
+//
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//
 
 
 

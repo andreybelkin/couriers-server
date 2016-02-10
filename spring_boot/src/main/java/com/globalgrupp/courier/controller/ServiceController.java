@@ -3,6 +3,7 @@ package com.globalgrupp.courier.controller;
 import com.globalgrupp.courier.model.*;
 import com.globalgrupp.courier.util.HibernateUtil;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.springframework.web.bind.annotation.*;
@@ -11,9 +12,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * Created by п on 01.02.2016.
@@ -135,8 +139,58 @@ public class ServiceController  {
             //log.info("Error writing file to output stream. Filename was '{}'", fileName, ex);
             throw new RuntimeException("IOError writing file to output stream");
         }
-
     }
+
+
+    @RequestMapping(value = "/getArchive/{result_id}", method = RequestMethod.GET)
+    public void getArchive(
+            @PathVariable("result_id") Long id,
+            HttpServletResponse response) {
+        try {
+            // get your file as InputStream
+            Session session= HibernateUtil.getSessionFactory().openSession();
+//            TaskResult taskResult=(TaskResult)session.get(TaskResult.class,id);
+
+            Task task=(Task)session.get(Task.class,id);
+            List<TaskAddressResultLink> taskAddressResultLinks= new ArrayList<>(task.getTaskAddressResultLinks());
+            taskAddressResultLinks.size();
+            ByteArrayOutputStream byteArrayOutputStream=new ByteArrayOutputStream();
+            ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream);
+            for (int i=0;i<taskAddressResultLinks.size();i++){
+                if (taskAddressResultLinks.get(i).getResults()!=null &&taskAddressResultLinks.get(i).getResults().size()>0){
+                    String street=taskAddressResultLinks.get(i).getAddress().getStreet()
+                            +""+taskAddressResultLinks.get(i).getAddress().getHouseNumber();
+                    String taskName=task.getDescription();
+                    List<TaskResult> taskResultList=new ArrayList<>(taskAddressResultLinks.get(i).getResults());
+                    for (int k=0;k<taskResultList.size();k++){
+                        List<Long> photoIds=taskResultList.get(k).getPhotoIds();
+                        for(int z=0;z<photoIds.size();z++){
+                            LoadedFile lf=(LoadedFile)session.get(LoadedFile.class,photoIds.get(z));
+                            ZipEntry zipEntry = new ZipEntry(taskName+"_"+street+"_"+(z+1)+".jpg");
+                            zipOutputStream.putNextEntry(zipEntry);
+                            zipOutputStream.write(lf.getData());
+                        }
+                    }
+                }
+            }
+            zipOutputStream.closeEntry();
+            zipOutputStream.close();
+            ByteArrayInputStream byteArrayInputStream=new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+
+
+            String fileName =URLEncoder.encode(task.getDescription()+".zip", "UTF-8");
+            // copy it to response's OutputStream
+            response.setHeader("Content-disposition", "attachment; filename=\""+ fileName+"\"");
+
+            org.apache.commons.io.IOUtils.copy(byteArrayInputStream,response.getOutputStream());
+            response.flushBuffer();
+        } catch (IOException ex) {
+            //log.info("Error writing file to output stream. Filename was '{}'", fileName, ex);
+            throw new RuntimeException("IOError writing file to output stream");
+        }
+    }
+
+
 
     @RequestMapping(value = "/getCourierInfo/{app_id}", method = RequestMethod.GET)
     public Courier getCourierInfo(

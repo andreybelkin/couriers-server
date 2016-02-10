@@ -11,6 +11,7 @@ import com.vaadin.event.ItemClickEvent;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.shared.ui.combobox.FilteringMode;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.ui.*;
 import org.hibernate.Query;
@@ -49,15 +50,25 @@ public class TaskController extends UI {
         BeanItemContainer<Task> container =
                 new BeanItemContainer<Task>(Task.class, tasks);
 
-        Grid grid=new Grid(container);
+        Table grid=new Table();
+        grid.setContainerDataSource(container);
         grid.setWidth("100%");
         grid.setHeight("100%");
-        grid.getColumn("courier").setHeaderCaption("Курьер");
-        grid.getColumn("description").setHeaderCaption("Описание");
-        grid.getColumn("periodBegin").setHidden(true);
-        grid.getColumn("periodEnd").setHidden(true);
-        grid.getColumn("taskAddressResultLinks").setHeaderCaption("Список адресов");
-        grid.getColumn("id").setHidden(true);
+        grid.setVisibleColumns("courier","description","taskAddressResultLinks","id");
+        grid.setColumnHeader("courier","Курьер");
+        grid.setColumnHeader("description","Описание");
+        grid.setColumnHeader("taskAddressResultLinks","Список адресов");
+        grid.setColumnHeader("id","Вложение");
+        grid.addGeneratedColumn("id", new Table.ColumnGenerator() {
+            @Override
+            public Object generateCell(Table table, Object itemId, Object columnId) {
+                Property prop =
+                        table.getItem(itemId).getItemProperty(columnId);
+                       Link res=new Link("Архив;",new ExternalResource("http://188.227.16.166:8081/service/getArchive/"+((Long)prop.getValue()).toString()));
+                       res.setTargetName("_blank");
+                return res;
+            }
+        });
 
 
         grid.addItemClickListener(new ItemClickEvent.ItemClickListener() {
@@ -68,6 +79,8 @@ public class TaskController extends UI {
                 }
             }
         });
+
+
         Button button=new Button("Создать задачу");
         button.addClickListener(new Button.ClickListener() {
             @Override
@@ -125,17 +138,36 @@ public class TaskController extends UI {
                 Property prop =
                         table.getItem(itemId).getItemProperty(columnId);
                 if (prop.getType().equals(List.class)) {
-                    HorizontalLayout hbox = new HorizontalLayout();
+                    VerticalLayout hbox = new VerticalLayout();
+
                     List<Long>qwe=(List<Long>)prop.getValue();
+
                     for (int i=0;i<qwe.size();i++){
-                        Link res=new Link("Вложение;",new ExternalResource("http://46.146.171.6:8080/service/getFile/"+qwe.get(i).toString()));
+                        Link res=new Link(((TaskResult)itemId).getTaskAddressResultLink().getTask().toString()+"_"
+                                +((TaskResult)itemId).getTaskAddressResultLink().toString()+"_"+i+";"
+                                ,new ExternalResource("http://188.227.16.166:8081/service/getFile/"+qwe.get(i).toString()));
                         res.setTargetName("_blank");
                         hbox.addComponent(res);
                     }
-
                     return hbox;
                 }
                 return null;
+            }
+        });
+
+        grid.addGeneratedColumn("correctPlace", new Table.ColumnGenerator() {
+            @Override
+            public Object generateCell(Table table, Object itemId, Object columnId) {
+                Property prop =
+                        table.getItem(itemId).getItemProperty(columnId);
+                boolean correctPlace=(boolean)prop.getValue();
+                if (correctPlace){
+                    Label res=new Label("<span style='color:green;'>Местоположение соответствует адресу</span>", ContentMode.HTML);
+                    return res;
+                }else{
+                    Label res=new Label("<span style='color:red;'>Местоположение не соответствует адресу</span>",ContentMode.HTML);
+                    return res;
+                }
             }
         });
 
@@ -171,7 +203,6 @@ public class TaskController extends UI {
         panel.setContent(panelContent);
         panelContent.setExpandRatio(grid,1);
         setContent(panel);
-
     }
 
 
@@ -226,7 +257,7 @@ public class TaskController extends UI {
         BeanItemContainer<TotalReport> container =
                 new BeanItemContainer<TotalReport>(TotalReport.class, totalReportList);
 
-        Table table=new Table();
+        Grid table=new Grid();
         table.setContainerDataSource(container);
         table.setWidth("100%");
         //table.setHeight("100%");
@@ -240,17 +271,51 @@ public class TaskController extends UI {
             }
         });
 
+        Grid.HeaderRow filterRow = table.appendHeaderRow();
 
+// Set up a filter for all columns
+        for (Object pid: table.getContainerDataSource()
+                .getContainerPropertyIds()) {
+            Grid.HeaderCell cell = filterRow.getCell(pid);
+
+            // Have an input field to use for filter
+            TextField filterField = new TextField();
+            filterField.setColumns(8);
+
+            // Update filter When the filter input is changed
+            filterField.addTextChangeListener(change -> {
+                // Can't modify filters so need to replace
+                container.removeContainerFilters(pid);
+
+                // (Re)create the filter if necessary
+                if (! change.getText().isEmpty())
+                    container.addContainerFilter(
+                            new SimpleStringFilter(pid,
+                                    change.getText(), true, false));
+            });
+            cell.setComponent(filterField);
+        }
+
+        table.setColumnOrder("courier","task","taskStartDate","taskEndDate","addressCount","courierAddressCount","porchCount","porchAddressCount");
+//        table.getColumn("id").setHidden(true);
         //table.setVisibleColumns();
-        table.setVisibleColumns("courier","task","taskStartDate","taskEndDate","addressCount","courierAddressCount","porchCount","porchAddressCount");
-        table.setColumnHeader("courier","Курьер");
-        table.setColumnHeader("task","Задача");
-        table.setColumnHeader("taskStartDate","Начало задачи");
-        table.setColumnHeader("taskEndDate","Конец задачи");
-        table.setColumnHeader("addressCount","Количество адресов (Всего)");
-        table.setColumnHeader("courierAddressCount","Количество адресов (Отмечены)");
-        table.setColumnHeader("porchCount","Количество подъездов (Всего)");
-        table.setColumnHeader("porchAddressCount","Количество подъездов (Отмечены)");
+//        table.setVisibleColumns("courier","task","taskStartDate","taskEndDate","addressCount","courierAddressCount","porchCount","porchAddressCount");
+        table.getColumn("courier").setHeaderCaption("Курьер");
+        table.getColumn("task").setHeaderCaption("Задача");
+        table.getColumn("taskStartDate").setHeaderCaption("Начало задачи");
+        table.getColumn("taskEndDate").setHeaderCaption("Конец задачи");
+        table.getColumn("addressCount").setHeaderCaption("Количество адресов (Всего)");
+        table.getColumn("courierAddressCount").setHeaderCaption("Количество адресов (Отмечены)");
+        table.getColumn("porchCount").setHeaderCaption("Количество подъездов (Всего)");
+        table.getColumn("porchAddressCount").setHeaderCaption("Количество подъездов (Отмечены)");
+//        table.setColumnHeader("courier","Курьер");
+//        table.setColumnHeader("task","Задача");
+//        table.setColumnHeader("taskStartDate","Начало задачи");
+//        table.setColumnHeader("taskEndDate","Конец задачи");
+//        table.setColumnHeader("addressCount","Количество адресов (Всего)");
+//        table.setColumnHeader("courierAddressCount","Количество адресов (Отмечены)");
+//        table.setColumnHeader("porchCount","Количество подъездов (Всего)");
+//        table.setColumnHeader("porchAddressCount","Количество подъездов (Отмечены)");
 
         Button btnBack=new Button("К списку задач");
         btnBack.addClickListener(new Button.ClickListener() {

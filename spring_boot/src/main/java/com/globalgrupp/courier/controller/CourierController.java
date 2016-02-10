@@ -66,6 +66,14 @@ public class CourierController extends UI {
         Panel panel = new Panel();
         Layout panelContent = new VerticalLayout();
 
+        Button backButton=new Button("К списку курьеров");
+        backButton.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                setbaseContent();
+            }
+        });
+
         Session session= HibernateUtil.getSessionFactory().openSession();
         Courier courier=(Courier)session.get(Courier.class,id);
 
@@ -80,7 +88,7 @@ public class CourierController extends UI {
         TextField tfDescription=new TextField();
         if (courier.getDescription()!=null)
         tfDescription.setValue(courier.getDescription());
-
+        panelContent.addComponent(backButton);
         panelContent.addComponent(label);
         panelContent.addComponent(label1);
         panelContent.addComponent(tfName);
