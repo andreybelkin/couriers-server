@@ -46,20 +46,20 @@ public class Address {
     @Column(name="rayon")
     private String rayon;
 
-    @Column(name="house_year")
-    private String houseYear;
+//    @Column(name="house_year")
+//    private String houseYear;
 
-    @Column(name="keya")
-    private String key;
+//    @Column(name="keya")
+//    private String key;
 
-    @Column(name="comment")
-    private String comment;
-
-    @Column(name="last_update")
-    private String lastUpdate;
-
-    @Column(name="novostroyka")
-    private String Novostroyka;
+//    @Column(name="comment")
+//    private String comment;
+//
+//    @Column(name="last_update")
+//    private String lastUpdate;
+//
+//    @Column(name="novostroyka")
+//    private String Novostroyka;
 
     public Address() {
     }
@@ -80,13 +80,6 @@ public class Address {
         this.cityRayon = cityRayon;
     }
 
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
 
     public String getHouseNumber() {
         return houseNumber;
@@ -104,28 +97,12 @@ public class Address {
         this.houseQuality = houseQuality;
     }
 
-    public String getHouseYear() {
-        return houseYear;
-    }
-
-    public void setHouseYear(String houseYear) {
-        this.houseYear = houseYear;
-    }
-
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
     }
 
     public String getKv() {
@@ -136,28 +113,12 @@ public class Address {
         this.kv = kv;
     }
 
-    public String getLastUpdate() {
-        return lastUpdate;
-    }
-
-    public void setLastUpdate(String lastUpdate) {
-        this.lastUpdate = lastUpdate;
-    }
-
     public String getLevelCount() {
         return levelCount;
     }
 
     public void setLevelCount(String levelCount) {
         this.levelCount = levelCount;
-    }
-
-    public String getNovostroyka() {
-        return Novostroyka;
-    }
-
-    public void setNovostroyka(String novostroyka) {
-        Novostroyka = novostroyka;
     }
 
     public Long getPorchCount() {

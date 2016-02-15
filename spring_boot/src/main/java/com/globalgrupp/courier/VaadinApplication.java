@@ -64,23 +64,22 @@ public class VaadinApplication extends  UI{
 
         Grid grid=new Grid(container);
         grid.setWidth("100%");
-        grid.setColumnOrder("street","houseNumber");
+        grid.setColumnOrder("rayon","kv","street","houseNumber","apartmentCount","postboxType","postboxQuality","houseQuality",
+                "levelCount","porchCount","cityRayon");
 
+
+        grid.getColumn("rayon").setHeaderCaption("Район");
+        grid.getColumn("kv").setHeaderCaption("Кв.");
         grid.getColumn("street").setHeaderCaption("Улица");
         grid.getColumn("houseNumber").setHeaderCaption("Дом №");
         grid.getColumn("apartmentCount").setHeaderCaption("Количество квартир");
-        grid.getColumn("cityRayon").setHeaderCaption("Район");
-        grid.getColumn("comment").setHeaderCaption("Коментарий");
-        grid.getColumn("houseQuality").setHeaderCaption("Уровень дома");
-        grid.getColumn("houseYear").setHeaderCaption("Год постройки(сдачи)");
-        grid.getColumn("key").setHeaderCaption("Ключ");
-        grid.getColumn("kv").setHeaderCaption("Кв.");
-        grid.getColumn("lastUpdate").setHeaderCaption("Последнее обновление");
-        grid.getColumn("levelCount").setHeaderCaption("Этажность");
-        grid.getColumn("novostroyka").setHeaderCaption("Новостройка");
-        grid.getColumn("porchCount").setHeaderCaption("Количество подъездов");
+        grid.getColumn("postboxType").setHeaderCaption("Ящики/Вахта");
         grid.getColumn("postboxQuality").setHeaderCaption("Состояние ящиков");
-        grid.getColumn("rayon").setHeaderCaption("Район");
+        grid.getColumn("houseQuality").setHeaderCaption("Уровень дома");
+        grid.getColumn("levelCount").setHeaderCaption("Этажность");
+        grid.getColumn("porchCount").setHeaderCaption("Количество подъездов");
+        grid.getColumn("cityRayon").setHeaderCaption("Район города");
+
         grid.getColumn("id").setHidden(true);
         grid.setHeight("100%");
 
@@ -338,16 +337,16 @@ public class VaadinApplication extends  UI{
                             address.setPorchCount(new Long(getCellStringValueCusom(row.getCell(9))));
                         if (row.getCell(10)!=null && getCellStringValueCusom(row.getCell(10))!=null)
                             address.setCityRayon(getCellStringValueCusom(row.getCell(10)));
-                        if (row.getCell(11)!=null && getCellStringValueCusom(row.getCell(11))!=null)
-                            address.setHouseYear(getCellStringValueCusom(row.getCell(11)));
-                        if (row.getCell(12)!=null && getCellStringValueCusom(row.getCell(12))!=null)
-                            address.setKey(getCellStringValueCusom(row.getCell(12)));
-                        if (row.getCell(13)!=null && getCellStringValueCusom(row.getCell(13))!=null)
-                            address.setComment(getCellStringValueCusom(row.getCell(13)));
-                        if (row.getCell(14)!=null && getCellStringValueCusom(row.getCell(14))!=null)
-                            address.setLastUpdate(getCellStringValueCusom(row.getCell(14)));
-                        if (row.getCell(15)!=null && getCellStringValueCusom(row.getCell(15))!=null)
-                            address.setNovostroyka(getCellStringValueCusom(row.getCell(15)));
+//                        if (row.getCell(11)!=null && getCellStringValueCusom(row.getCell(11))!=null)
+//                            address.setHouseYear(getCellStringValueCusom(row.getCell(11)));
+//                        if (row.getCell(12)!=null && getCellStringValueCusom(row.getCell(12))!=null)
+//                            address.setKey(getCellStringValueCusom(row.getCell(12)));
+//                        if (row.getCell(13)!=null && getCellStringValueCusom(row.getCell(13))!=null)
+//                            address.setComment(getCellStringValueCusom(row.getCell(13)));
+//                        if (row.getCell(14)!=null && getCellStringValueCusom(row.getCell(14))!=null)
+//                            address.setLastUpdate(getCellStringValueCusom(row.getCell(14)));
+//                        if (row.getCell(15)!=null && getCellStringValueCusom(row.getCell(15))!=null)
+//                            address.setNovostroyka(getCellStringValueCusom(row.getCell(15)));
                         session.save(address);
                         i++;
 //                        if (o==100){
@@ -356,9 +355,6 @@ public class VaadinApplication extends  UI{
 //                        }
                         row=sheet.getRow(i);
                         address=null;
-                        if (row.getCell(0)==null && getCellStringValueCusom(row.getCell(0))==null){
-                            break;
-                        }
                     }catch (Exception e){
                         e.printStackTrace();
                     }

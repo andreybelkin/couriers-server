@@ -385,23 +385,23 @@ public class TaskController extends UI {
 
         });
         grid.setWidth("100%");
-        grid.setColumnOrder("street","houseNumber");
+        grid.setColumnOrder("rayon","kv","street","houseNumber","apartmentCount","postboxType","postboxQuality","houseQuality",
+                "levelCount","porchCount","cityRayon");
 
+
+        grid.getColumn("rayon").setHeaderCaption("Район");
+        grid.getColumn("kv").setHeaderCaption("Кв.");
         grid.getColumn("street").setHeaderCaption("Улица");
         grid.getColumn("houseNumber").setHeaderCaption("Дом №");
         grid.getColumn("apartmentCount").setHeaderCaption("Количество квартир");
-        grid.getColumn("cityRayon").setHeaderCaption("Район");
-        grid.getColumn("comment").setHeaderCaption("Коментарий");
-        grid.getColumn("houseQuality").setHeaderCaption("Уровень дома");
-        grid.getColumn("houseYear").setHeaderCaption("Год постройки(сдачи)");
-        grid.getColumn("key").setHeaderCaption("Ключ");
-        grid.getColumn("kv").setHeaderCaption("Кв.");
-        grid.getColumn("lastUpdate").setHeaderCaption("Последнее обновление");
-        grid.getColumn("levelCount").setHeaderCaption("Этажность");
-        grid.getColumn("novostroyka").setHeaderCaption("Новостройка");
-        grid.getColumn("porchCount").setHeaderCaption("Количество подъездов");
+        grid.getColumn("postboxType").setHeaderCaption("Ящики/Вахта");
         grid.getColumn("postboxQuality").setHeaderCaption("Состояние ящиков");
-        grid.getColumn("rayon").setHeaderCaption("Район");
+        grid.getColumn("houseQuality").setHeaderCaption("Уровень дома");
+        grid.getColumn("levelCount").setHeaderCaption("Этажность");
+        grid.getColumn("porchCount").setHeaderCaption("Количество подъездов");
+        grid.getColumn("cityRayon").setHeaderCaption("Район города");
+
+
         grid.getColumn("id").setHidden(true);
         grid.setHeight("100%");
 
