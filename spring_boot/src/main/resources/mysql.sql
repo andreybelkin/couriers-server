@@ -121,6 +121,14 @@ ADD COLUMN `correct_place` TINYINT(1) NULL AFTER `location`;
 
 update couriers.task_address_result set correct_place=0 where id!=0;
 
+CREATE TABLE couriers.`user_credentials` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `login` varchar(45) NOT NULL,
+  `password` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+
 
 
 

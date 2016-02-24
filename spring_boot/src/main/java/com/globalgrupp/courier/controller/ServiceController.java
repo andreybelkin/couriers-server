@@ -162,13 +162,15 @@ public class ServiceController  {
                             +""+taskAddressResultLinks.get(i).getAddress().getHouseNumber();
                     String taskName=task.getDescription();
                     List<TaskResult> taskResultList=new ArrayList<>(taskAddressResultLinks.get(i).getResults());
+                    int f=1;
                     for (int k=0;k<taskResultList.size();k++){
                         List<Long> photoIds=taskResultList.get(k).getPhotoIds();
                         for(int z=0;z<photoIds.size();z++){
                             LoadedFile lf=(LoadedFile)session.get(LoadedFile.class,photoIds.get(z));
-                            ZipEntry zipEntry = new ZipEntry(taskName+"_"+street+"_"+(z+1)+".jpg");
+                            ZipEntry zipEntry = new ZipEntry(taskName+"_"+street+"_"+(f)+".jpg");
                             zipOutputStream.putNextEntry(zipEntry);
                             zipOutputStream.write(lf.getData());
+                            f++;
                         }
                     }
                 }
@@ -185,6 +187,8 @@ public class ServiceController  {
             org.apache.commons.io.IOUtils.copy(byteArrayInputStream,response.getOutputStream());
             response.flushBuffer();
         } catch (IOException ex) {
+            ex.printStackTrace();
+
             //log.info("Error writing file to output stream. Filename was '{}'", fileName, ex);
             throw new RuntimeException("IOError writing file to output stream");
         }

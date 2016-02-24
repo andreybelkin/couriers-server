@@ -36,7 +36,10 @@ public class TaskController extends UI {
     ComboBox cbCourier=null;
     @Override
     protected void init(VaadinRequest vaadinRequest) {
-
+        boolean isAuthorized=getSession().getAttribute("isAuthorized")==null?false: (boolean)getSession().getAttribute("isAuthorized");
+        if (!isAuthorized){
+            getUI().getPage().setLocation("/login");
+        }
         setBaseContent();
     }
 
@@ -88,6 +91,19 @@ public class TaskController extends UI {
                 createTask();
             }
         });
+        HorizontalLayout horizontalLayout=new HorizontalLayout();
+        horizontalLayout.setWidth("100%");
+        horizontalLayout.addComponent(button);
+        horizontalLayout.setExpandRatio(button,1.0f);
+        Button btnLogout=new Button("Выход");
+        btnLogout.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                getSession().setAttribute("isAuthorized",false);
+                getUI().getPage().setLocation("/login");
+            }
+        });
+        horizontalLayout.addComponent(btnLogout);
 
         Button btnTotalReport=new Button("Сводный отчет");
         btnTotalReport.addClickListener(new Button.ClickListener() {
@@ -97,7 +113,7 @@ public class TaskController extends UI {
             }
         });
 
-        panelContent.addComponent(button);
+        panelContent.addComponent(horizontalLayout);
         panelContent.addComponent(btnTotalReport);
         panelContent.addComponent(grid);
         panelContent.setHeight("100%");
@@ -179,6 +195,20 @@ public class TaskController extends UI {
             }
         });
 
+        HorizontalLayout horizontalLayout=new HorizontalLayout();
+        horizontalLayout.setWidth("100%");
+        horizontalLayout.addComponent(backButton);
+        horizontalLayout.setExpandRatio(backButton,1.0f);
+        Button btnLogout=new Button("Выход");
+        btnLogout.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                getSession().setAttribute("isAuthorized",false);
+                getUI().getPage().setLocation("/login");
+            }
+        });
+        horizontalLayout.addComponent(btnLogout);
+
         Button btnTotalReport=new Button("К сводному реестру");
         btnTotalReport.addClickListener(new Button.ClickListener() {
             @Override
@@ -195,7 +225,7 @@ public class TaskController extends UI {
         grid.setColumnHeader("taskAddressResultLink","Адрес задачи");
 
         grid.setHeight("100%");
-        panelContent.addComponent(backButton);
+        panelContent.addComponent(horizontalLayout);
         panelContent.addComponent(btnTotalReport);
         panelContent.addComponent(grid);
         panelContent.setHeight("100%");
@@ -324,8 +354,23 @@ public class TaskController extends UI {
                 setBaseContent();
             }
         });
+
+        HorizontalLayout horizontalLayout=new HorizontalLayout();
+        horizontalLayout.setWidth("100%");
+        horizontalLayout.addComponent(btnBack);
+        horizontalLayout.setExpandRatio(btnBack,1.0f);
+        Button btnLogout=new Button("Выход");
+        btnLogout.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                getSession().setAttribute("isAuthorized",false);
+                getUI().getPage().setLocation("/login");
+            }
+        });
+        horizontalLayout.addComponent(btnLogout);
+
         table.setHeight("100%");
-        panelContent.addComponent(btnBack);
+        panelContent.addComponent(horizontalLayout);
         panelContent.addComponent(table);
         panelContent.setHeight("100%");
         panel.setHeight("100%");
@@ -351,7 +396,24 @@ public class TaskController extends UI {
         }
 
         cbCourier.setNullSelectionAllowed(false);
-        panelContent.addComponent(new Label("Описание"));
+
+        Label labelDesc=new Label("Описание");
+
+        HorizontalLayout horizontalLayout=new HorizontalLayout();
+        horizontalLayout.setWidth("100%");
+        horizontalLayout.addComponent(labelDesc);
+        horizontalLayout.setExpandRatio(labelDesc,1.0f);
+        Button btnLogout=new Button("Выход");
+        btnLogout.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                getSession().setAttribute("isAuthorized",false);
+                getUI().getPage().setLocation("/login");
+            }
+        });
+        horizontalLayout.addComponent(btnLogout);
+
+        panelContent.addComponent(horizontalLayout);
         panelContent.addComponent(tfName);
         panelContent.addComponent(new Label("Курьер"));
         panelContent.addComponent(cbCourier);

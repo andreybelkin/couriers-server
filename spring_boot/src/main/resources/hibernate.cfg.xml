@@ -6,8 +6,8 @@
     <session-factory>
         <property name="hibernate.bytecode.use_reflection_optimizer">false</property>
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-        <property name="hibernate.connection.password"></property>
-        <property name="hibernate.connection.url">jdbc:mysql://188.227.16.166:3306/couriers?UseUnicode=true&amp;characterEncoding=utf8</property>
+        <property name="hibernate.connection.password">mysql</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/couriers?UseUnicode=true&amp;characterEncoding=utf8</property>
         <property name="hibernate.connection.username">root</property>
         <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
         <property name="hibernate.connection.CharSet">utf8</property>
@@ -21,7 +21,7 @@
         <mapping class="com.globalgrupp.courier.model.Task"></mapping>
         <mapping class="com.globalgrupp.courier.model.TaskAddressResultLink"></mapping>
         <mapping class="com.globalgrupp.courier.model.TaskResult"></mapping>
-        <mapping class="com.globalgrupp.courier.model.TotalReport"></mapping>
+        <mapping class="com.globalgrupp.courier.model.UserCredentials"></mapping>
 
     </session-factory>
 </hibernate-configuration>

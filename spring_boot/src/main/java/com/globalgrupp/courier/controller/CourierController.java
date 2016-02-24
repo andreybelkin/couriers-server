@@ -21,6 +21,10 @@ public class CourierController extends UI {
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
+        boolean isAuthorized=getSession().getAttribute("isAuthorized")==null?false: (boolean)getSession().getAttribute("isAuthorized");
+        if (!isAuthorized){
+            getUI().getPage().setLocation("/login");
+        }
         setbaseContent();
     }
 
@@ -52,7 +56,23 @@ public class CourierController extends UI {
         table.setColumnHeader("descripion","Описание/комментарий");
 
         Label label=new Label("Список курьеров");
-        panelContent.addComponent(label);
+
+        HorizontalLayout horizontalLayout=new HorizontalLayout();
+        horizontalLayout.setWidth("100%");
+        horizontalLayout.addComponent(label);
+        horizontalLayout.setExpandRatio(label,1.0f);
+        Button btnLogout=new Button("Выход");
+        btnLogout.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                getSession().setAttribute("isAuthorized",false);
+                getUI().getPage().setLocation("/login");
+            }
+        });
+        horizontalLayout.addComponent(btnLogout);
+
+
+        panelContent.addComponent(horizontalLayout);
         panelContent.setHeight("100%");
         panelContent.addComponent(table);
         panel.setContent(panelContent);
@@ -74,6 +94,21 @@ public class CourierController extends UI {
             }
         });
 
+        HorizontalLayout horizontalLayout=new HorizontalLayout();
+        horizontalLayout.setWidth("100%");
+        horizontalLayout.addComponent(backButton);
+        horizontalLayout.setExpandRatio(backButton,1.0f);
+        Button btnLogout=new Button("Выход");
+        btnLogout.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                getSession().setAttribute("isAuthorized",false);
+                getUI().getPage().setLocation("/login");
+            }
+        });
+        horizontalLayout.addComponent(btnLogout);
+
+
         Session session= HibernateUtil.getSessionFactory().openSession();
         Courier courier=(Courier)session.get(Courier.class,id);
 
@@ -88,7 +123,7 @@ public class CourierController extends UI {
         TextField tfDescription=new TextField();
         if (courier.getDescription()!=null)
         tfDescription.setValue(courier.getDescription());
-        panelContent.addComponent(backButton);
+        panelContent.addComponent(horizontalLayout);
         panelContent.addComponent(label);
         panelContent.addComponent(label1);
         panelContent.addComponent(tfName);

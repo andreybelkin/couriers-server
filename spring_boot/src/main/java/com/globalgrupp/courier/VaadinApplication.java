@@ -36,11 +36,13 @@ public class VaadinApplication extends  UI{
 
     final Embedded image = new Embedded("Uploaded Image");
 
-
     @Override
     protected void init(VaadinRequest vaadinRequest) {
+        boolean isAuthorized=getSession().getAttribute("isAuthorized")==null?false: (boolean)getSession().getAttribute("isAuthorized");
+        if (!isAuthorized){
+            getUI().getPage().setLocation("/login");
+        }
         setDefault();
-
     }
 
     private void setDefault(){
@@ -54,7 +56,21 @@ public class VaadinApplication extends  UI{
 // Put the components in a panel
         Panel panel = new Panel();
         VerticalLayout panelContent = new VerticalLayout();
-        panelContent.addComponents(upload, image);
+        HorizontalLayout horizontalLayout=new HorizontalLayout();
+        horizontalLayout.setWidth("100%");
+        horizontalLayout.addComponent(upload);
+        horizontalLayout.setExpandRatio(upload,1.0f);
+        Button btnLogout=new Button("Выход");
+        btnLogout.addClickListener(new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent clickEvent) {
+                getSession().setAttribute("isAuthorized",false);
+                getUI().getPage().setLocation("/login");
+            }
+        });
+        horizontalLayout.addComponent(btnLogout);
+
+        panelContent.addComponents(horizontalLayout, image);
 
         Session session= HibernateUtil.getSessionFactory().openSession();
         Query query=session.createQuery("from Address");
