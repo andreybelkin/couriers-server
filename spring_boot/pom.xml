@@ -139,12 +139,17 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+
         </plugins>
     </build>
     <repositories>
         <repository>
             <id>JBoss repository</id>
             <url>http://repository.jboss.com/maven2/</url>
+        </repository>
+        <repository>
+            <id>vaadin-addons</id>
+            <url>http://maven.vaadin.com/vaadin-addons</url>
         </repository>
     </repositories>
     <pluginRepositories>
@@ -154,4 +159,6 @@
             <url>http://repo1.maven.org/maven2/</url>
         </pluginRepository>
     </pluginRepositories>
+
+
 </project>

@@ -36,24 +36,45 @@ public class ServiceController  {
 
         return res;
     }
+//
+//    @RequestMapping(value="/savePushAppId/{appId}", method= RequestMethod.POST)
+//    public void savePushAppId(@PathVariable("appId") String pushAppId){
+//        Session session= HibernateUtil.getSessionFactory().openSession();
+//        Query query=session.createQuery("from Courier where app_push_id=:pushAppId");
+//        query.setParameter("pushAppId",pushAppId);
+//        List<Courier> users=query.list();
+//        Courier fUser;
+//        if (users.size()==1){
+//            fUser=users.get(0);
+//            //такой ключ уже есть
+//        } else {
+//            fUser=new Courier();
+//            fUser.setAppPushId(pushAppId);
+//            session.beginTransaction();
+//            session.save(fUser);
+//            session.getTransaction().commit();
+//        }
+//    }
 
-    @RequestMapping(value="/savePushAppId/{appId}", method= RequestMethod.POST)
-    public void savePushAppId(@PathVariable("appId") String pushAppId){
+
+    @RequestMapping(value="/savePushAppId/oldId={oldAppId}&newId={newAppId}", method=RequestMethod.POST)
+    public void updatePushAppId(@PathVariable("oldAppId") String oldAppId, @PathVariable("newAppId") String newAppId){
         Session session= HibernateUtil.getSessionFactory().openSession();
         Query query=session.createQuery("from Courier where app_push_id=:pushAppId");
-        query.setParameter("pushAppId",pushAppId);
+        query.setParameter("pushAppId",oldAppId);
         List<Courier> users=query.list();
         Courier fUser;
         if (users.size()==1){
             fUser=users.get(0);
+            fUser.setAppPushId(newAppId);
             //такой ключ уже есть
         } else {
             fUser=new Courier();
-            fUser.setAppPushId(pushAppId);
-            session.beginTransaction();
-            session.save(fUser);
-            session.getTransaction().commit();
+            fUser.setAppPushId(newAppId);
         }
+        session.beginTransaction();
+        session.save(fUser);
+        session.getTransaction().commit();
     }
 
     @RequestMapping(value="/getMyTasks/{appId}", method= RequestMethod.GET)
